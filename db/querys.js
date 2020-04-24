@@ -1,29 +1,48 @@
 const mysql = require('mysql');
 const connection = mysql.createConnection({
-  host: 'FILL_ME_IN',
-  user: 'FILL_ME_IN',
-  password: 'FILL_ME_IN',
-  database: 'FILL_ME_IN'
+  host: 'localhost',
+  user: 'root',
+  password: 'password',
+  database: 'todolist'
 });
 
 connection.connect(err => {
   if(err){
     console.log('couldn\'t connect to database')
-  } else {
+  } else{
     console.log('connected to mysql database!')
   }
 });
 
 const postTask = (task, callback) => {
-
+  connection.query('INSERT INTO tasks (task) VALUES (?)', [task], (err,data) => {
+    if (err) {
+      callback(err, null)
+    } else {
+      callback(null, err)
+    }
+  })
 }
 
 const getTasks = (callback) => {
-
+  connection.query('SELECT * FROM tasks', (err, data) => {
+    if (err) {
+      callback(err, null)
+    } else {
+      callback(null, err)
+    }
+  })
 }
 
 const deleteTask = (id, callback) => {
-
-}
+  connection.query("DELETE FROM tasks WHERE id = " + id, (err, data) => {
+    if (err) {
+      console.log("problem deleting task in query");
+      callback(err, null);
+    } else {
+      callback(null, data);
+    }
+  })
+};
 
 module.exports = {postTask, getTasks, deleteTask}
